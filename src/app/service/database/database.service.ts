@@ -89,6 +89,20 @@ export class DatabaseService {
     return this.database.executeSql('DELETE FROM dateused WHERE id = ?', [id])
   }
 
+  deleteAll(){
+    this.database.executeSql('SELECT * FROM dateused', []).then(data=>{
+      let count=0;
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          this.deleteDate(data.rows.item(i).id)
+          count++;
+        }
+      }
+      this.utils.presentAlert("", "Se han Borrado "+ count + " registros", [{
+        text: "Entendido",
+      }]);
+    })
+  }
 
   formatDate(date) {
     console.log(date)

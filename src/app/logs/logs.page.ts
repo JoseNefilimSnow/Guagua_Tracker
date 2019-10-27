@@ -38,7 +38,9 @@ export class LogsPage implements OnInit {
       this.ngOnInit();
     })
   }
-
+  deleteAll(){
+    this.db.deleteAll();
+  }
   close(){
     this.navcntr.pop();
   }
