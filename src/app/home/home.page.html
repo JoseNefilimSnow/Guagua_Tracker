@@ -1,0 +1,23 @@
+<ion-header >
+  <ion-toolbar color="primary">
+    <ion-title>
+      Guagua Tracker
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addCustom()"><ion-icon md="md-add"></ion-icon></ion-button>
+      <ion-button (click)="toLogs()"><ion-icon md="md-list"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <br>
+  <br>
+  <br>
+  <br>
+<ion-card text-center>
+  <ion-card-title>¿Has usado la tarjeta hoy?</ion-card-title>
+  <br>
+  <ion-button  color="primary" size="large" expand="full" (click)="add()">Si</ion-button>
+</ion-card>
+</ion-content>

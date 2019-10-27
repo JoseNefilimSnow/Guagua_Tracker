@@ -1,0 +1,7 @@
+{
+  "name": "guagua_tracker",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
