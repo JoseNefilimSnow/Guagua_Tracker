@@ -22,17 +22,11 @@ export class LogsPage implements OnInit {
         
         for (var i = 0; i < data.rows.length; i++) {
  
-          arrayAux.push({ 
+          this.arrayLogs.push({ 
             id: data.rows.item(i).id,
             fecha: data.rows.item(i).fecha
            });
         }
-      }
-      for(let item of arrayAux){
-        this.arrayLogs.push({ 
-          id: item.id,
-          fecha: this.formatDate(new Date(item.fecha))
-         });
       }
     });
   }
@@ -49,19 +43,4 @@ export class LogsPage implements OnInit {
     this.navcntr.pop();
   }
   
-  formatDate(date) {
-    console.log(date)
-    var monthNames = [
-      "Enero", "Febrero", "Marzo",
-      "Abril", "Mayo", "Junio", "Julio",
-      "Agosto", "Septiembre", "Octubre",
-      "Noviembre", "Diciembre"
-    ];
-  
-    var day = date.getDate();
-    var monthIndex = date.getMonth();
-    var year = date.getFullYear();
-  
-    return day + ' ' + monthNames[monthIndex] + ' ' + year;
-  }
 }

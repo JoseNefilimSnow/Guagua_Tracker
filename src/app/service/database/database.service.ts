@@ -1,41 +1,57 @@
-import { Platform } from '@ionic/angular';
-import { Injectable } from '@angular/core';
-import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
-import { HttpClient } from '@angular/common/http';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
-import { BehaviorSubject } from 'rxjs';
- 
- 
+import {
+  Platform
+} from '@ionic/angular';
+import {
+  Injectable
+} from '@angular/core';
+import {
+  SQLitePorter
+} from '@ionic-native/sqlite-porter/ngx';
+import {
+  HttpClient
+} from '@angular/common/http';
+import {
+  SQLite,
+  SQLiteObject
+} from '@ionic-native/sqlite/ngx';
+import {
+  BehaviorSubject
+} from 'rxjs';
+import {
+  UtilsService
+} from '../utils/utils.service';
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
   private database: SQLiteObject;
-  private dbReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
- 
+  private dbReady: BehaviorSubject < boolean > = new BehaviorSubject(false);
+
   dates = new BehaviorSubject([]);
- 
-  constructor(private plt: Platform, private sqlite: SQLite, private http: HttpClient) {
+
+  constructor(private plt: Platform, private sqlite: SQLite, private utils: UtilsService) {
     this.plt.ready().then(() => {
       this.sqlite.create({
-        name: 'tracker.db',
-        location: 'default'
-      })
+          name: 'tracker.db',
+          location: 'default'
+        })
         .then((db: SQLiteObject) => {
-      
-      
-          db.executeSql('CREATE TABLE IF NOT EXISTS dateused(id INTEGER PRIMARY KEY AUTOINCREMENT,fecha DATE);', [])
+
+
+          db.executeSql('CREATE TABLE IF NOT EXISTS dateused(id INTEGER PRIMARY KEY AUTOINCREMENT,fecha VARCHAR NOT NULL);', [])
             .then(() => console.log('Executed SQL'))
             .catch(e => console.log(e));
-      
-          this.database=db;
+
+          this.database = db;
         })
         .catch(e => console.log(e));
 
 
     });
   }
- 
+
   getDatabaseState() {
     return this.dbReady.asObservable();
   }
@@ -45,9 +61,27 @@ export class DatabaseService {
   }
 
   addDate(fecha) {
-    let data = [fecha];
-    return this.database.executeSql('INSERT INTO dateused (fecha) VALUES (?)', data).then(data => {
-      this.loadDates();
+    let date = this.formatDate(new Date(fecha))
+
+    this.database.executeSql('SELECT * FROM dateused', []).then(data => {
+      let auxBool=true;
+      if (data.rows.length > 0) {
+        
+        for (var i = 0; i < data.rows.length; i++) {
+          console.log("En DB:",data.rows.item(i).fecha)
+          console.log("Entrando:",date)
+            if(data.rows.item(i).fecha===date){
+              this.utils.presentAlert("Error", "La fecha ya existe dentro de los registros", [{
+                text: "Ok!",
+              }]);
+              auxBool=false;
+            }
+        }
+      }
+      if(auxBool){
+      return this.database.executeSql('INSERT INTO dateused (fecha) VALUES (?)',[date])
+  
+      }
     });
   }
 
@@ -55,12 +89,20 @@ export class DatabaseService {
     return this.database.executeSql('DELETE FROM dateused WHERE id = ?', [id])
   }
 
-  updateDate(log) {
-    let data = log.fecha;
-    return this.database.executeSql(`UPDATE dateused SET fecha = ? WHERE id = ${log.id}`, data).then(data => {
-      this.loadDates();
-    })
+
+  formatDate(date) {
+    console.log(date)
+    var monthNames = [
+      "Enero", "Febrero", "Marzo",
+      "Abril", "Mayo", "Junio", "Julio",
+      "Agosto", "Septiembre", "Octubre",
+      "Noviembre", "Diciembre"
+    ];
+  
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+  
+    return day + ' ' + monthNames[monthIndex] + ' ' + year;
   }
-
 }
-
