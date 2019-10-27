@@ -23,7 +23,7 @@ export class LogsPage implements OnInit {
  
           this.arrayLogs.push({ 
             id: data.rows.item(i).id,
-            fecha: data.rows.item(i).fecha
+            fecha: this.formatDate(data.rows.item(i).fecha)
            });
         }
       }
@@ -40,5 +40,20 @@ export class LogsPage implements OnInit {
 
   close(){
     this.navcntr.pop();
+  }
+  
+  formatDate(date) {
+    var monthNames = [
+      "Enero", "Febrero", "Marzo",
+      "Abril", "Mayo", "Junio", "Julio",
+      "Agosto", "Septiembre", "Octubre",
+      "Noviembre", "Diciembre"
+    ];
+  
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+  
+    return day + '/' + monthNames[monthIndex] + '/' + year;
   }
 }
