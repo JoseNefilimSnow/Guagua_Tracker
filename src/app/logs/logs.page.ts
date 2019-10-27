@@ -17,15 +17,22 @@ export class LogsPage implements OnInit {
   ngOnInit() {
     this.arrayLogs=[];
     this.db.loadDates().then(data => {
- 
+      let arrayAux=[]
       if (data.rows.length > 0) {
+        
         for (var i = 0; i < data.rows.length; i++) {
  
-          this.arrayLogs.push({ 
+          arrayAux.push({ 
             id: data.rows.item(i).id,
-            fecha: this.formatDate(data.rows.item(i).fecha)
+            fecha: data.rows.item(i).fecha
            });
         }
+      }
+      for(let item of arrayAux){
+        this.arrayLogs.push({ 
+          id: item.id,
+          fecha: this.formatDate(new Date(item.fecha))
+         });
       }
     });
   }
@@ -43,6 +50,7 @@ export class LogsPage implements OnInit {
   }
   
   formatDate(date) {
+    console.log(date)
     var monthNames = [
       "Enero", "Febrero", "Marzo",
       "Abril", "Mayo", "Junio", "Julio",
@@ -54,6 +62,6 @@ export class LogsPage implements OnInit {
     var monthIndex = date.getMonth();
     var year = date.getFullYear();
   
-    return day + '/' + monthNames[monthIndex] + '/' + year;
+    return day + ' ' + monthNames[monthIndex] + ' ' + year;
   }
 }
