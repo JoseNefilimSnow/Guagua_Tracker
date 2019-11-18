@@ -27,16 +27,16 @@ import {
 })
 export class DatabaseService {
   private database: SQLiteObject;
-  private dbReady: BehaviorSubject < boolean > = new BehaviorSubject(false);
+  private dbReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   dates = new BehaviorSubject([]);
 
   constructor(private plt: Platform, private sqlite: SQLite, private utils: UtilsService) {
     this.plt.ready().then(() => {
       this.sqlite.create({
-          name: 'tracker.db',
-          location: 'default'
-        })
+        name: 'tracker.db',
+        location: 'default'
+      })
         .then((db: SQLiteObject) => {
 
 
@@ -47,7 +47,7 @@ export class DatabaseService {
           this.database = db;
         })
         .catch(e => console.log(e));
-
+      this.dbReady.next(true);
 
     });
   }
@@ -64,23 +64,23 @@ export class DatabaseService {
     let date = this.formatDate(new Date(fecha))
 
     this.database.executeSql('SELECT * FROM dateused', []).then(data => {
-      let auxBool=true;
+      let auxBool = true;
       if (data.rows.length > 0) {
-        
+
         for (var i = 0; i < data.rows.length; i++) {
-          console.log("En DB:",data.rows.item(i).fecha)
-          console.log("Entrando:",date)
-            if(data.rows.item(i).fecha===date){
-              this.utils.presentAlert("Error", "La fecha ya existe dentro de los registros", [{
-                text: "Ok!",
-              }]);
-              auxBool=false;
-            }
+          console.log("En DB:", data.rows.item(i).fecha)
+          console.log("Entrando:", date)
+          if (data.rows.item(i).fecha === date) {
+            this.utils.presentAlert("Error", "La fecha ya existe dentro de los registros", [{
+              text: "Ok!",
+            }]);
+            auxBool = false;
+          }
         }
       }
-      if(auxBool){
-      return this.database.executeSql('INSERT INTO dateused (fecha) VALUES (?)',[date])
-  
+      if (auxBool) {
+        return this.database.executeSql('INSERT INTO dateused (fecha) VALUES (?)', [date])
+
       }
     });
   }
@@ -89,16 +89,16 @@ export class DatabaseService {
     return this.database.executeSql('DELETE FROM dateused WHERE id = ?', [id])
   }
 
-  deleteAll(){
-    this.database.executeSql('SELECT * FROM dateused', []).then(data=>{
-      let count=0;
+  deleteAll() {
+    this.database.executeSql('SELECT * FROM dateused', []).then(data => {
+      let count = 0;
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
           this.deleteDate(data.rows.item(i).id)
           count++;
         }
       }
-      this.utils.presentAlert("", "Se han Borrado "+ count + " registros", [{
+      this.utils.presentAlert("", "Se han Borrado " + count + " registros", [{
         text: "Entendido",
       }]);
     })
@@ -112,11 +112,11 @@ export class DatabaseService {
       "Agosto", "Septiembre", "Octubre",
       "Noviembre", "Diciembre"
     ];
-  
+
     var day = date.getDate();
     var monthIndex = date.getMonth();
     var year = date.getFullYear();
-  
+
     return day + ' ' + monthNames[monthIndex] + ' ' + year;
   }
 }

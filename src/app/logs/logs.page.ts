@@ -10,39 +10,49 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
   styleUrls: ['./logs.page.scss'],
 })
 export class LogsPage implements OnInit {
-  public arrayLogs=[];
+  public arrayLogs = [];
 
-  constructor(private db:DatabaseService,private utils:UtilsService, private navcntr:NavController) { }
+  constructor(private db: DatabaseService, private utils: UtilsService, private navcntr: NavController) { }
 
-  ngOnInit() {
-    this.arrayLogs=[];
-    this.db.loadDates().then(data => {
-      let arrayAux=[]
-      if (data.rows.length > 0) {
-        
-        for (var i = 0; i < data.rows.length; i++) {
- 
-          this.arrayLogs.push({ 
-            id: data.rows.item(i).id,
-            fecha: data.rows.item(i).fecha
-           });
-        }
+  ngOnInit() { }
+
+  ionViewDidEnter() {
+    this.arrayLogs = [];
+    this.db.getDatabaseState().subscribe(ready => {
+      if (ready) {
+
+        this.db.loadDates().then(data => {
+          let arrayAux = []
+          if (data.rows.length > 0) {
+
+            for (var i = 0; i < data.rows.length; i++) {
+
+              this.arrayLogs.push({
+                id: data.rows.item(i).id,
+                fecha: data.rows.item(i).fecha
+              });
+            }
+          }
+        });
       }
-    });
+    })
   }
 
 
-  delete(i){
+  delete(i) {
     console.log(this.arrayLogs[i])
-    this.db.deleteDate(this.arrayLogs[i].id).then(_=>{
+    this.db.deleteDate(this.arrayLogs[i].id).then(_ => {
       this.ngOnInit();
     })
   }
-  deleteAll(){
+  info() {
+    this.utils.presentAlert("Consejo", "Puedes borrar entradas individuales de fechas deslizando los elementos de la lista a la izquierda y pulsando el boton rojo", [{ text: "Entendido" }])
+  }
+  deleteAll() {
     this.db.deleteAll();
   }
-  close(){
+  close() {
     this.navcntr.pop();
   }
-  
+
 }

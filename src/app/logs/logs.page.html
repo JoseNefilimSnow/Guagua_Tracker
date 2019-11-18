@@ -1,14 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Registro de dias</ion-title>
-    <ion-buttons slot="start" >
-      <ion-button  (click)="close()" >
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
         <ion-icon md="md-arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-buttons slot="end" >
-      <ion-button  (click)="deleteAll()" >
-        <ion-icon md="md-trash"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -18,8 +13,8 @@
   <ion-list *ngFor="let item of arrayLogs; let i = index ">
     <ion-item-sliding>
       <ion-item>
-        <ion-label>Usado el: <br/>  {{item.fecha}}</ion-label>
-       
+        <ion-label>Usado el: <br /> {{item.fecha}}</ion-label>
+
       </ion-item>
 
 
